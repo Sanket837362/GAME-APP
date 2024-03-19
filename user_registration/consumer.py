@@ -1,12 +1,12 @@
+from channels.generic.websocket import AsyncWebsocketConsumer
+from asgiref.sync import sync_to_async
 from django.utils import timezone
-from channels.generic.websocket import WebsocketConsumer
 import json
 from .models import *
 from datetime import datetime
 from channels.layers import get_channel_layer
 from django.dispatch import receiver
 from django.db.models.signals import post_save
-from asgiref.sync import async_to_sync
 from datetime import timedelta
 from apscheduler.schedulers.background import BackgroundScheduler
 from urllib.parse import parse_qs
@@ -14,44 +14,44 @@ from .game import *
 from .scheduler import *
 
 
-class GameClockConsumer(WebsocketConsumer):
-    def connect(self):
+class GameClockConsumer(AsyncWebsocketConsumer):
+    async def connect(self):
         group_name = "game"
-        self.channel_layer.group_add(group_name, self.channel_name)
+        await self.channel_layer.group_add(group_name, self.channel_name)
         query_string = self.scope["query_string"]
         query_params = parse_qs(query_string.decode("utf-8"))
         user_id = query_params.get("user_id", [None])[0]
         self.user_id = user_id
-        self.accept()
+        await self.accept()
         if not user_id:
-            self.send(
+            await self.send(
                 {
                     "type": "websocket.close",
                     "code": 4000,
                     "reason": "user_id is required",
                 }
             )
-            self.close()
-        liveUser.objects.update_or_create(
+            await self.close()
+        await sync_to_async(liveUser.objects.update_or_create)(
             user_id_id=user_id,
             defaults={"channel_name": self.channel_name, "flag": 1},
         )
 
-    def disconnect(self, close_code):
-        liveUser.objects.filter(channel_name=self.channel_name).delete()
-        self.close()
+    async def disconnect(self, close_code):
+        await sync_to_async(liveUser.objects.filter(channel_name=self.channel_name).delete)()
+        await self.close()
 
-    def send_game_time(self, game_time, game_id, type):
-        self.send(
+    async def send_game_time(self, game_time, game_id, type):
+        await self.send(
             text_data=json.dumps(
                 {"game_time": game_time, "game_id": game_id, "game_type": type}
             )
         )
 
-    def send_notification(self, event):
-        self.send(text_data=json.dumps(event))
+    async def send_notification(self, event):
+        await self.send(text_data=json.dumps(event))
 
-    def receive(self, text_data):
+    async def receive(self, text_data):
         data = json.loads(text_data)
         game_id = data["game_id"]
         user_id = data["user_id"]
@@ -60,23 +60,23 @@ class GameClockConsumer(WebsocketConsumer):
         bet = data["bet"]
         if data["game_type"] == "1 minute":
             # check time to play the game if 5 seconds is left then user can't play the game
-            health, time = play_1min_game_status(game_id, 1)
+            health, time = await sync_to_async(play_1min_game_status)(game_id, 1)
             print(health, time)
             print("8" * 100)
             if not health:
-                self.send(text_data=json.dumps({"error": time}))
+                await self.send(text_data=json.dumps({"error": time}))
                 return
             # check user balance
-            user = UserDetail.objects.get(id=user_id)
+            user = await sync_to_async(UserDetail.objects.get)(id=user_id)
             if user.wallet < amount:
-                self.send(text_data=json.dumps({"error": "Insufficient balance"}))
+                await self.send(text_data=json.dumps({"error": "Insufficient balance"}))
                 return
             # deduct amount from user wallet
             user.wallet -= amount
-            user.save()
+            await sync_to_async(user.save)()
             # play game
-            game_id_id = GameDetail.objects.filter(game_type=game_id).first().id
-            game_datas = UserGameData.objects.create(
+            game_id_id = await sync_to_async(GameDetail.objects.filter(game_type=game_id).first)().id
+            game_datas = await sync_to_async(UserGameData.objects.create)(
                 game_type=game_type,
                 game_id_id=game_id_id,
                 amount=amount,
@@ -84,7 +84,7 @@ class GameClockConsumer(WebsocketConsumer):
                 type_of_bet=game_type,
                 bet=bet,
             )
-            self.send(
+            await self.send(
                 text_data=json.dumps(
                     {"message": "Game played successfully", "bet_id": game_datas.id}
                 )
