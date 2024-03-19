@@ -69,11 +69,23 @@ class liveUser(models.Model):
 class result(models.Model):
     id = models.AutoField(primary_key=True)
     game_id = models.ForeignKey(GameDetail, on_delete=models.CASCADE, related_name='game_results' )
+    game_type = models.CharField(max_length=50)
     winning_number = models.CharField(max_length=50)
     winning_color = models.CharField(max_length=50)
     winning_ball = models.CharField(max_length=50)
     total_bet_amount = models.FloatField()
     total_win_amount = models.FloatField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    is_active = models.BooleanField(default=True)
+
+class UserBankDetails(models.Model):
+    id = models.AutoField(primary_key=True)
+    user_id = models.ForeignKey(UserDetail,on_delete=models.CASCADE)
+    account_number = models.CharField(max_length=50)
+    ifsc_code = models.CharField(max_length=50)
+    bank_name = models.CharField(max_length=50)
+    branch_name = models.CharField(max_length=50)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=True)

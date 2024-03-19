@@ -1,8 +1,8 @@
 import random
 from .models import *
 from django.db.models import Sum, F
-from channels.layers import get_channel_layer
-from asgiref.sync import async_to_sync
+# from channels.layers import get_channel_layer
+# from asgiref.sync import async_to_sync
 from datetime import timedelta
 from apscheduler.schedulers.background import BackgroundScheduler
 
@@ -21,7 +21,7 @@ def calculate_winning_number(bet):
     }
 
     total_amount = sum([b["total_amount"] for b in bet])
-    winning_amount = total_amount * 0.98  # 90% of total betting amount
+    winning_amount = total_amount * 0.98  # 98% of total betting amount
 
     while True:
         winning_number = str(random.randint(0, 9))
@@ -37,13 +37,13 @@ def calculate_winning_number(bet):
                     else b["total_amount"] * 4.5
                 )
             elif b["type_of_bet"] == "number" and str(b["bet"]) == str(winning_number):
-                amount += b["total_amount"] * 8
+                amount += b["total_amount"] * 9
         if amount <= winning_amount:
             break
     return winning_number, winning_amount, amount, ball[0:-1], ball[-1]
 
 
-def play_1min_game(game_id):
+def play_1min_game(game_id , game__type):
     games_data = GameDetail.objects.filter(game_type=game_id, is_active=True)
     if not games_data:
         return "Game not found", None, None
@@ -59,6 +59,7 @@ def play_1min_game(game_id):
     game_id_id = GameDetail.objects.filter(game_type=game_id).first().id
     result.objects.create(
         game_id_id=game_id_id,
+        game_type = game__type,
         winning_number=winning_number,
         winning_color=color,
         winning_ball=big_small,
@@ -86,7 +87,7 @@ def play_1min_game(game_id):
                     amount += bet_amount * 2
 
         elif user.type_of_bet == "number" and str(user.bet) == str(winning_number):
-            amount += bet_amount * 8
+            amount += bet_amount * 9
         if amount > 0:
             user.win_or_lose = "win"
             user.winning_amount = amount
@@ -106,19 +107,5 @@ def play_1min_game(game_id):
             user.winning_color = color
             user.winning_ball = big_small
             user.save()
-        live_User = liveUser.objects.filter(user_id_id =  user.user_id.id).first()
-        print(live_User,"REsulfghjdsbjdbfhsdjkfjyhadhfuiycern8iuynw348iry8urwiytureyvtuiyuiytuwrvtuiyrvytuerytuvreyuivtuiyruitvyuithoiyyujhweg vyugj")
-        if live_User:
-            channel_layer = get_channel_layer()
-            print(live_User, live_User.channel_name)
-            async_to_sync(channel_layer.send)(
-                live_User.channel_name,
-                {
-                    "type": "send_notification",
-                    "message": f"You have {user.win_or_lose} on 1MIN Game." ,
-                    "notification_type": "Result",
-                },
-            )
-
     games_data.update(is_active=False)
     return total_paid_amount, total_bet_amount, winning_amount

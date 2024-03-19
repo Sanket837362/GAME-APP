@@ -18,11 +18,11 @@ django_application = get_asgi_application()
 
 import user_registration.routes
 
-application = ProtocolTypeRouter({
-    "http": django_application,
-    "websocket": AuthMiddlewareStack(
-        URLRouter(
-            user_registration.routes.websocket_urlpatterns
-        )
-    ),
-})
+# application = ProtocolTypeRouter({
+#     "http": django_application,
+#     "websocket": AuthMiddlewareStack(
+#         URLRouter(
+#             user_registration.routes.websocket_urlpatterns
+#         )
+#     ),
+# })

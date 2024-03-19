@@ -37,9 +37,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django_apscheduler',
+    
     'user_registration',
-    'channels'
+    'django_apscheduler',
     
 ]
 
@@ -73,14 +73,14 @@ TEMPLATES = [
 
 
 
-CHANNEL_LAYERS = { 
-    "default": { 
-        "BACKEND": 'channels.layers.InMemoryChannelLayer',
-    },
-}
+# CHANNEL_LAYERS = { 
+#     "default": { 
+#         "BACKEND": 'channels.layers.InMemoryChannelLayer',
+#     },
+# }
 
 WSGI_APPLICATION = 'game_site.wsgi.application'
-ASGI_APPLICATION = 'game_site.asgi.application'
+# ASGI_APPLICATION = 'game_site.asgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
@@ -134,4 +134,4 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 APSCHEDULER_RUN_NOW_TIMEOUT = 25  # Second
 APSCHEDULER_DATETIME_FORMAT = "N j, Y, f:s a"
-ALLOWED_HOSTS = ["16.16.203.70" , "13.50.106.205"]
+ALLOWED_HOSTS = ["16.16.203.70" , "13.50.106.205",'127.0.0.1','localhost']
