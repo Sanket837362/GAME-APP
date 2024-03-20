@@ -46,6 +46,7 @@ def game_id_1min():
             game_details = GameDetail.objects.create(
                 game_type=game_id, game_name="1MIN", created_at=game_details_time
             )
+            return game_details.game_type, 60
         else:
             time = 60 - time_diff.seconds
     else:
@@ -60,6 +61,7 @@ def game_id_1min():
         game_details = GameDetail.objects.create(
             game_type=game_id, game_name="1MIN", created_at=game_details_time
         )
+        return game_details.game_type, 60
     return game_details.game_type, time
 
 
@@ -120,6 +122,7 @@ def game_id_3min():
             game_details = GameDetail.objects.create(
                 game_type=game_id, game_name="3MIN", created_at=game_details_time
             )
+            return game_details.game_type, 180
         else:
             times = 180 - time_diff.seconds
 
@@ -134,6 +137,7 @@ def game_id_3min():
         game_details = GameDetail.objects.create(
             game_type=game_id, game_name="3MIN", created_at=game_details_time
         )
+        return game_details.game_type, 180
     if times==5:
         total_paid_amount, total_bet_amount, winning_amount = play_1min_game(
                 game_details.game_type , '3MIN'
@@ -171,6 +175,7 @@ def game_id_5min():
             game_details = GameDetail.objects.create(
                 game_type=game_id, game_name="5MIN", created_at=game_details_time
             )
+            return game_details.game_type, 300
         else:
             times = 300 - time_diff.seconds
     else:
@@ -184,6 +189,7 @@ def game_id_5min():
         game_details = GameDetail.objects.create(
             game_type=game_id, game_name="5MIN", created_at=game_details_time
         )
+        return game_details.game_type, 300
     if times==5:
         total_paid_amount, total_bet_amount, winning_amount = play_1min_game(
                 game_details.game_type, '5MIN'
@@ -221,6 +227,7 @@ def game_id_10min():
             game_details = GameDetail.objects.create(
                 game_type=game_id, game_name="10MIN", created_at=game_details_time
             )
+            return game_details.game_type, 60
         else:
             times = 600 - time_diff.seconds
     else:
@@ -234,6 +241,7 @@ def game_id_10min():
         game_details = GameDetail.objects.create(
             game_type=game_id, game_name="10MIN", created_at=game_details_time
         )
+        return game_details.game_type, 60
     if times==5:
         total_paid_amount, total_bet_amount, winning_amount = play_1min_game(
                 game_details.game_type, '10MIN'
