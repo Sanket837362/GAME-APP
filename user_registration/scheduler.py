@@ -265,5 +265,5 @@ def check_game_times():
 
 def start():
     scheduler = BackgroundScheduler()
-    scheduler.add_job(check_game_times, "interval", seconds=1.5)
+    scheduler.add_job(check_game_times, "interval", seconds=1)
     scheduler.start()
