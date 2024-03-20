@@ -21,8 +21,7 @@ def calculate_winning_number(bet):
     }
 
     total_amount = sum([b["total_amount"] for b in bet])
-    winning_amount = total_amount * 0.98  # 98% of total betting amount
-
+    winning_amount = total_amount 
     while True:
         winning_number = str(random.randint(0, 9))
         ball = color_and_number_of_balls[winning_number]
@@ -70,7 +69,7 @@ def play_1min_game(game_id , game__type):
     total_paid_amount = 0
     for user in user_data:
         amount = 0
-        bet_amount = user.amount * 0.98
+        bet_amount = user.amount
         if user.type_of_bet == "big/small" and user.bet == big_small:
             amount += bet_amount * 2
         elif user.type_of_bet == "color" and user.bet in color:

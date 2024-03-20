@@ -144,7 +144,7 @@ class UserGameDataAPI(ListAPIView):
                                 game_id = game_id_id,
                                 type_of_bet = data['type_of_bet'],
                                 bet = data['bet'],
-                                amount = data['amount'],
+                                amount = data['amount']*0.98,
                                 game_type = game_type
                             )
                             user.wallet -= data['amount']
@@ -160,7 +160,7 @@ class UserGameDataAPI(ListAPIView):
                                 game_id = game_id_id,
                                 type_of_bet = data['type_of_bet'],
                                 bet = data['bet'],
-                                amount = data['amount'],
+                                amount = data['amount']*0.98,
                                 game_type = game_type
                             )
                             user.wallet -= data['amount']
@@ -176,7 +176,7 @@ class UserGameDataAPI(ListAPIView):
                                 game_id = game_id_id,
                                 type_of_bet = data['type_of_bet'],
                                 bet = data['bet'],
-                                amount = data['amount'],
+                                amount = data['amount']*0.98,
                                 game_type = game_type
                             )
                             user.wallet -= data['amount']
@@ -192,7 +192,7 @@ class UserGameDataAPI(ListAPIView):
                                 game_id = game_id_id,
                                 type_of_bet = data['type_of_bet'],
                                 bet = data['bet'],
-                                amount = data['amount'],
+                                amount = data['amount']*0.98,
                                 game_type = game_type
                             )
                             user.wallet -= data['amount']
