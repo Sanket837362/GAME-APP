@@ -205,23 +205,58 @@ class UserGameDataAPI(ListAPIView):
         except Exception as e:
             return Response({"message":str(e)})
         
-    def get(self,request):
+    def get(self,request, slug = None):
         try:
-            id = request.GET.get('user_id')
-            game_type = request.GET.get('game_type')
-            if not game_type or game_type not in ["1MIN","3MIN","5MIN","10MIN"]:
-                return Response({"message":"game_type is required and should be 1MIN or 3MIN or 5MIN or 10MIN"})
-            if not id:
-                return Response({"message":"user_id is required"})
-            if id:
-                game = UserGameData.objects.filter(user_id_id=id , game_id__game_name= game_type).extra(
-            select={
-                "winning_color_cleaned": '''replace(replace(replace(winning_color, '[', ''), ']', ''), "'", "")'''
-                        }
-                    ).values( "game_type", "amount", "type_of_bet", "bet" , "win_or_lose" , "winning_amount" , "winning_number", "winning_ball" , "created_at" , "game_id__game_type" ,'winning_color_cleaned')
+            if not slug:
+                id = request.GET.get('user_id')
+                game_type = request.GET.get('game_type')
+                if not game_type or game_type not in ["1MIN","3MIN","5MIN","10MIN"]:
+                    return Response({"message":"game_type is required and should be 1MIN or 3MIN or 5MIN or 10MIN"})
+                if not id:
+                    return Response({"message":"user_id is required"})
+                if id:
+                    game = UserGameData.objects.filter(user_id_id=id , game_id__game_name= game_type).extra(
+                select={
+                    "winning_color_cleaned": '''replace(replace(replace(winning_color, '[', ''), ']', ''), "'", "")'''
+                            }
+                        ).values( "game_type", "amount", "type_of_bet", "bet" , "win_or_lose" , "winning_amount" , "winning_number", "winning_ball" , "created_at" , "game_id__game_type" ,'winning_color_cleaned')
+                    return Response({"data":game})
+                game = UserGameData.objects.all().values()
                 return Response({"data":game})
-            game = UserGameData.objects.all().values()
-            return Response({"data":game})
+            else:
+                id = request.GET.get('id')
+                game_type = request.GET.get('game_type')
+                if id:
+                    game = UserGameData.objects.filter(id=id).values()
+                    # print(game)
+                    # if not game_type or game_type not in ["1MIN","3MIN","5MIN","10MIN"]:
+                    #     return Response({"message":"game_type is required and should be 1MIN or 3MIN or 5MIN or 10MIN"})
+                    if not id:
+                        return Response({"message":"user_id is required"})
+                    if id:
+
+                        game = UserGameData.objects.filter(user_id_id=id , game_id__game_type= game_type).extra(
+                        select={
+                            "winning_color_cleaned": '''replace(replace(replace(winning_color, '[', ''), ']', ''), "'", "")'''
+                                    }
+                                ).values( "game_type", "amount", "type_of_bet", "bet" , "win_or_lose" , "winning_amount" , "winning_number", "winning_ball" , "created_at" , "game_id__game_type" ,'winning_color_cleaned')
+                        result = {}
+                        overall_win = 0
+                        win_or_lose = "lose"
+                        # print(game,"sss")
+                        for j in game:
+                            if not j.get('winning_number') :
+                                return Response({"data":"Game Not Found."})
+                            result['winning_number'] = j['winning_number']
+                            result['winning_ball'] = j['winning_ball']
+                            result['winning_color'] = j['winning_color_cleaned']
+                            overall_win += j['winning_amount'] if j.get('winning_amount') else 0
+                        if overall_win > 0:
+                            win_or_lose = "win"
+                        result['win_or_lose'] = win_or_lose
+                        result['amount'] = overall_win
+                        return Response({"data":result})
+                    return Response({"data":"game_id is required"})
         except Exception as e:
             return Response({"message":str(e)})
 

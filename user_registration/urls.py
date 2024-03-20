@@ -19,6 +19,7 @@ urlpatterns = [
     #############################  USER GAME DATA  ################################
     path('place-bet/', UserGameDataAPI.as_view(), name='place_bet'),
     path('user-game-result/', UserGameDataAPI.as_view(), name='user-game-result'),
+    path('user-current-game-result/', UserGameDataAPI.as_view(), { "slug": "user-current-game-result" },name='user-current-game-result'),
 
     #############################  BANK DETAILS  ################################
     path('add-bank-details/', UserBankAPI.as_view(), name='bank_details'),
