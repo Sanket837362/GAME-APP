@@ -27,14 +27,7 @@ def game_id_1min():
         x = datetime.strptime(formatted_time, "%Y-%m-%d %H:%M:%S")
         y = datetime.strptime(formated_times, "%Y-%m-%d %H:%M:%S")
         time_diff = abs(x - y)
-        if time == 5:
-            # play_1min_game(game_details.game_type)
-            print("game time is start", game_details.game_type)
-            total_paid_amount, total_bet_amount, winning_amount = play_1min_game(
-                game_details.game_type, '1MIN'
-            )
-            print(total_paid_amount, total_bet_amount, winning_amount)
-            print("game time is over")
+        
         if time_diff >= timedelta(minutes=1):
             game_id = (
                 "1MIN"
@@ -62,6 +55,14 @@ def game_id_1min():
             game_type=game_id, game_name="1MIN", created_at=game_details_time
         )
         return game_details.game_type, 60
+    if time == 5:
+            # play_1min_game(game_details.game_type)
+            print("game time is start", game_details.game_type)
+            total_paid_amount, total_bet_amount, winning_amount = play_1min_game(
+                game_details.game_type, '1MIN'
+            )
+            print(total_paid_amount, total_bet_amount, winning_amount)
+            print("game time is over")
     return game_details.game_type, time
 
 
