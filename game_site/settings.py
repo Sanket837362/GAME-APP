@@ -134,4 +134,4 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 APSCHEDULER_RUN_NOW_TIMEOUT = 25  # Second
 APSCHEDULER_DATETIME_FORMAT = "N j, Y, f:s a"
-ALLOWED_HOSTS = ["16.16.203.70" , "13.50.106.205",'127.0.0.1','localhost']
+ALLOWED_HOSTS = ["16.16.203.70" , "13.50.106.205",'127.0.0.1','localhost','64.227.172.62']
