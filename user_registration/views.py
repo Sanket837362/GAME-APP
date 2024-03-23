@@ -245,6 +245,8 @@ class UserGameDataAPI(ListAPIView):
                         win_or_lose = '-'
                         total_bet_amount = 0.0
                         # print(game,"sss")
+                        if not game:
+                            return Response('Game Not Found.')
                         for j in game:
                             if not j.get('winning_number') :
                                 return Response('Game Not Found.')
