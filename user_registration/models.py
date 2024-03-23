@@ -36,7 +36,7 @@ class GameDetail(models.Model):
     result = models.CharField(max_length=50)
     ball = models.CharField(max_length=50)
     color = models.CharField(max_length=50)
-    created_at = models.DateTimeField()
+    created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=True)
 
