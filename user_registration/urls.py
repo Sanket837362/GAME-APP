@@ -4,6 +4,7 @@ urlpatterns = [
 
     #############################  USER REGISTRATION  ################################
     path('register/', UserRegistration.as_view(), name='register'),
+    path('get/', UserRegistration.as_view(), name='get'),
     path('login/', Login.as_view(), name='login'),
 
     #############################  GAME CLOCK  ################################
