@@ -25,6 +25,7 @@ urlpatterns = [
     path('add-bank-details/', UserBankAPI.as_view(), name='bank_details'),
     path('update-bank-details/', UserBankAPI.as_view(), name='update_bank_details'),
     path('get-bank-details/', UserBankAPI.as_view(), name='get_bank_details'),
-
+    path('withdraw-money/',  UserwithdrawHistoryAPi.as_view(), name='withdraw_money'),
+    path('withdraw-money-history/',  UserwithdrawHistoryAPi.as_view(), name='withdraw_money_history'),
 
 ]

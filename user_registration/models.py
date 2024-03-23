@@ -89,3 +89,13 @@ class UserBankDetails(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=True)
+
+class UserwithdrawHistory(models.Model):
+    id = models.AutoField(primary_key=True)
+    user_id = models.ForeignKey(UserDetail,on_delete=models.CASCADE)
+    bank_id = models.ForeignKey(UserBankDetails,on_delete=models.CASCADE)
+    status = models.CharField(max_length=50)
+    amount = models.FloatField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    is_active = models.BooleanField(default=True) 

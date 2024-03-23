@@ -371,3 +371,45 @@ class UserGameResultAPI(ListAPIView):
             return Response({"message":"id and game_id is required"})
         except Exception as e:
             return Response({"message":str(e)})
+        
+class UserwithdrawHistoryAPi(ListAPIView):
+    def post(self,request):
+        try:
+            '''
+            user_id: 100 
+            amount : 200
+            '''
+
+            user_id = request.data.get('user_id')
+            amount = request.data.get('amount')
+            if not user_id or not amount:
+                return Response({"message":"user_id and amount is required"})
+            user_details = UserDetail.objects.filter(id= user_id).first()
+            if user_details:
+                if user_details.wallet >= amount:
+                    user_bank_id = UserBankDetails.objects.filter( user_id=user_id).first()
+                    if user_bank_id:
+                        user_details.wallet  -= amount
+                        user_details.save()
+                        withdrawn_history = UserwithdrawHistory.objects.create(
+                                user_id_id = user_details.id,
+                                bank_id_id = user_bank_id.id,
+                                status = 'In  Process',
+                                amount = amount
+                        )
+                        return Response({"message": "Your Withdraw Request Is In Process.","transactionId":withdrawn_history.id} )
+                    return ({"message": "bank details not fond."})
+                return Response({"message": "Insufficient balance."})
+            return Response({"message": "User does not exisits."}  )
+        except Exception as e:
+            return Response({"message":str(e)})
+    
+    def get(self,request):
+        id = request.GET.get('user_id')
+        if id:
+            user_history = UserwithdrawHistory.objects.filter(user_id_id = id).values('id', 'user_id__username' , 'bank_id' , 'status' , 'amount' , 'created_at')
+            return Response(user_history)
+        return Response({"message": "User does not exisits."}  )
+
+    
+                             

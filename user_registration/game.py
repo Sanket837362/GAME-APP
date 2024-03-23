@@ -47,66 +47,69 @@ def play_1min_game(game_id , game__type):
     if not games_data:
         return "Game not found", None, None
 
-    bets = (
-        UserGameData.objects.filter(game_id__game_type=game_id, game_id__is_active=True)
-        .values("type_of_bet", "bet")
-        .annotate(total_amount=Sum("amount"))
-    )
-    winning_number, total_bet_amount, winning_amount, color, big_small = (
-        calculate_winning_number(list(bets))
-    )
-    game_id_id = GameDetail.objects.filter(game_type=game_id).first().id
-    if not result.objects.filter(game_id_id=game_id_id).exists():
-        result.objects.create(
-            game_id_id=game_id_id,
-            game_type = game__type,
-            winning_number=winning_number,
-            winning_color=color,
-            winning_ball=big_small,
-            total_bet_amount=total_bet_amount,
-            total_win_amount=winning_amount,
-        )
-        user_data = UserGameData.objects.filter(game_id__game_type=game_id)
-        total_paid_amount = 0
-        for user in user_data:
-            amount = 0
-            bet_amount = user.amount
-            if user.type_of_bet == "big/small" and user.bet == big_small:
-                amount += bet_amount * 2
-            elif user.type_of_bet == "color" and user.bet in color:
-                if user.bet == "violet":
-                    amount += bet_amount * 4.5
-                else:
-                    if user.bet == "red" and winning_number == "0":
-                        amount += bet_amount * 1.5
-                    # else:
-                    #     amount += bet_amount * 2
-                    elif user.bet == "green" and winning_number == "5":
-                        amount += bet_amount * 1.5
+    try:
+        game_id_id = GameDetail.objects.filter(game_type=game_id).first().id
+        if not result.objects.filter(game_id_id=game_id_id).exists():
+            bets = (
+            UserGameData.objects.filter(game_id__game_type=game_id, game_id__is_active=True)
+            .values("type_of_bet", "bet")
+            .annotate(total_amount=Sum("amount"))
+            )
+            winning_number, total_bet_amount, winning_amount, color, big_small = (
+                calculate_winning_number(list(bets))
+            )
+            result.objects.create(
+                game_id_id=game_id_id,
+                game_type = game__type,
+                winning_number=winning_number,
+                winning_color=color,
+                winning_ball=big_small,
+                total_bet_amount=total_bet_amount,
+                total_win_amount=winning_amount,
+            )
+            user_data = UserGameData.objects.filter(game_id__game_type=game_id)
+            total_paid_amount = 0
+            for user in user_data:
+                amount = 0
+                bet_amount = user.amount
+                if user.type_of_bet == "big/small" and user.bet == big_small:
+                    amount += bet_amount * 2
+                elif user.type_of_bet == "color" and user.bet in color:
+                    if user.bet == "violet":
+                        amount += bet_amount * 4.5
                     else:
-                        amount += bet_amount * 2
+                        if user.bet == "red" and winning_number == "0":
+                            amount += bet_amount * 1.5
+                        # else:
+                        #     amount += bet_amount * 2
+                        elif user.bet == "green" and winning_number == "5":
+                            amount += bet_amount * 1.5
+                        else:
+                            amount += bet_amount * 2
 
-            elif user.type_of_bet == "number" and str(user.bet) == str(winning_number):
-                amount += bet_amount * 9
-            if amount > 0:
-                user.win_or_lose = "win"
-                user.winning_amount = amount
-                user.winning_number = winning_number
-                user.winning_color = color
-                user.winning_ball = big_small
-                user.save()
-                UserDetail.objects.filter(id=user.user_id.id).update(
-                    wallet=F("wallet") + amount
-                )
-                total_paid_amount += amount
+                elif user.type_of_bet == "number" and str(user.bet) == str(winning_number):
+                    amount += bet_amount * 9
+                if amount > 0:
+                    user.win_or_lose = "win"
+                    user.winning_amount = amount
+                    user.winning_number = winning_number
+                    user.winning_color = color
+                    user.winning_ball = big_small
+                    user.save()
+                    UserDetail.objects.filter(id=user.user_id.id).update(
+                        wallet=F("wallet") + amount
+                    )
+                    total_paid_amount += amount
 
-            else:
-                user.win_or_lose = "lose"
-                user.winning_amount = 0
-                user.winning_number = winning_number
-                user.winning_color = color
-                user.winning_ball = big_small
-                user.save()
-        games_data.update(is_active=False)
-        return total_paid_amount, total_bet_amount, winning_amount
-    return None, None, None
+                else:
+                    user.win_or_lose = "lose"
+                    user.winning_amount = 0
+                    user.winning_number = winning_number
+                    user.winning_color = color
+                    user.winning_ball = big_small
+                    user.save()
+            games_data.update(is_active=False)
+            return total_paid_amount, total_bet_amount, winning_amount
+        return None, None, None
+    except :
+        pass
