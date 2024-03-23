@@ -241,18 +241,18 @@ class UserGameDataAPI(ListAPIView):
                                     }
                                 ).values( "game_type", "amount", "type_of_bet", "bet" , "win_or_lose" , "winning_amount" , "winning_number", "winning_ball" , "created_at" , "game_id__game_type" ,'winning_color_cleaned')
                         result = {}
-                        overall_win = 0
+                        overall_win = 0.0
                         win_or_lose = '-'
-                        total_bet_amount = 0
+                        total_bet_amount = 0.0
                         # print(game,"sss")
                         for j in game:
                             if not j.get('winning_number') :
-                                return Response({"data":"Game Not Found."})
+                                return Response('Game Not Found.')
                             result['winning_number'] = j['winning_number']
                             result['winning_ball'] = j['winning_ball']
                             result['winning_color'] = j['winning_color_cleaned']
-                            total_bet_amount += j['amount'] if j.get('amount') else 0
-                            overall_win += j['winning_amount'] if j.get('winning_amount') else 0
+                            total_bet_amount += j['amount'] if j.get('amount') else 0.0
+                            overall_win += j['winning_amount'] if j.get('winning_amount') else 0.0
                         if overall_win >= total_bet_amount:
                             win_or_lose = "win"
                         else:
@@ -260,8 +260,8 @@ class UserGameDataAPI(ListAPIView):
                         result['win_or_lose'] = win_or_lose
                         result['winning_amount'] = overall_win
                         result['total_bet_amount'] = total_bet_amount
-                        return Response({"data":result})
-                    return Response({"data":"game_id is required"})
+                        return Response(result)
+                    return Response("game_id is required")
         except Exception as e:
             return Response({"message":str(e)})
 
