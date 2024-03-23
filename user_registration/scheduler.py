@@ -18,6 +18,7 @@ def game_id_1min():
     game_details = (
         GameDetail.objects.filter(game_name="1MIN").order_by("-created_at").first()
     )
+    print(game_details)
     if game_details:
         dt_object = datetime.strptime(
             str(game_details.created_at), "%Y-%m-%d %H:%M:%S.%f%z"
@@ -28,7 +29,7 @@ def game_id_1min():
         x = datetime.strptime(formatted_time, "%Y-%m-%d %H:%M:%S")
         y = datetime.strptime(formated_times, "%Y-%m-%d %H:%M:%S")
         time_diff = abs(x - y)
-        
+        print(time_diff)
         if time_diff >= timedelta(minutes=1):
             game_id = (
                 "1MIN"
