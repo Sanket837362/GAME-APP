@@ -8,6 +8,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from .game import *
 
 
+
 def game_id_1min():
     game_time = timezone.now().second
     game_time_min = timezone.now().minute
