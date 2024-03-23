@@ -34,7 +34,7 @@ class UserRegistration(ListAPIView):
             id = request.GET.get('id')
             if id:
                 user = UserDetail.objects.filter(id=id).values()
-                return Response({"data":user})
+                return Response(user[0])
             user = UserDetail.objects.all().values()
             return Response({"data":user})
         except Exception as e:
