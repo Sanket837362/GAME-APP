@@ -220,9 +220,9 @@ class UserGameDataAPI(ListAPIView):
                     "winning_color_cleaned": '''replace(replace(replace(winning_color, '[', ''), ']', ''), "'", "")'''
                             }
                         ).values( "game_type", "amount", "type_of_bet", "bet" , "win_or_lose" , "winning_amount" , "winning_number", "winning_ball" , "created_at" , "game_id__game_type" ,'winning_color_cleaned')
-                    return Response({"data":game})
+                    return Response(game)
                 game = UserGameData.objects.all().values()
-                return Response({"data":game})
+                return Response(game)
             else:
                 id = request.GET.get('id')
                 game_type = request.GET.get('game_type')
