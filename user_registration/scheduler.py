@@ -13,21 +13,20 @@ def game_id_1min():
     game_time_min = timezone.now().minute
     game_time_hour = timezone.now().hour
     time = 60 - game_time
-    game_details_time = datetime.now()
+    game_details_time =  timezone.now()
     game_details = (
-        GameDetail.objects.filter(game_name="1MIN").order_by("-created_at").first()
+        GameDetail.objects.filter(game_name="1MIN").order_by("-id").first()
     )
     if game_details:
         dt_object = datetime.strptime(
             str(game_details.created_at), "%Y-%m-%d %H:%M:%S.%f%z"
         )
-        timestamp = datetime.strptime(str(game_details_time), "%Y-%m-%d %H:%M:%S.%f")
+        timestamp = datetime.strptime(str(game_details_time).split('+')[0], "%Y-%m-%d %H:%M:%S.%f")
         formatted_time = timestamp.strftime("%Y-%m-%d %H:%M:%S")
         formated_times = dt_object.strftime("%Y-%m-%d %H:%M:%S")
         x = datetime.strptime(formatted_time, "%Y-%m-%d %H:%M:%S")
         y = datetime.strptime(formated_times, "%Y-%m-%d %H:%M:%S")
         time_diff = abs(x - y)
-        
         if time_diff >= timedelta(minutes=1):
             game_id = (
                 "1MIN"
@@ -37,7 +36,7 @@ def game_id_1min():
                 + str(game_time)
             )
             game_details = GameDetail.objects.create(
-                game_type=game_id, game_name="1MIN", created_at=game_details_time
+                game_type=game_id, game_name="1MIN",  created_at = timezone.now()
             )
             return game_details.game_type, 60
         else:
@@ -274,5 +273,5 @@ def check_game_times():
 
 def start():
     scheduler = BackgroundScheduler()
-    scheduler.add_job(check_game_times, "interval", seconds=1)
+    # scheduler.add_job(check_game_times, "interval", seconds=1)
     scheduler.start()
