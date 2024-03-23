@@ -101,3 +101,10 @@ class UserwithdrawHistoryAdmin(admin.ModelAdmin):
     download_csv.short_description = "Download CSV"
 
 admin.site.register(UserwithdrawHistory, UserwithdrawHistoryAdmin)
+
+class UserGameDataAdmin(admin.ModelAdmin):
+    list_display = ('id', 'game_type', 'game_id', 'type_of_bet', 'bet', 'amount', 'user_id', 'created_at', 'updated_at', 'is_active', 'win_or_lose', 'winning_amount', 'winning_number', 'winning_color', 'winning_ball')
+    list_filter = ('game_type', 'type_of_bet', 'user_id', 'is_active')
+    search_fields = ('game_type', 'type_of_bet', 'bet', 'user_id__username')
+
+admin.site.register(UserGameData, UserGameDataAdmin)
