@@ -265,7 +265,8 @@ class UserGameDataAPI(ListAPIView):
         except Exception as e:
             return Response({"message":str(e)})
 
-from django.utils.timezone import make_aware
+
+
 class GameClock(ListAPIView):
     def get(self,request):
         try:
