@@ -94,18 +94,18 @@ def play_1min_game_status(game_id, time):
 
 def game_id_3min():
     times = 180
-    game_time_second = datetime.now().second
-    game_time_min = datetime.now().minute
-    game_time_hour = datetime.now().hour
-    game_details_time = datetime.now()
+    game_time_second = timezone.now().second
+    game_time_min = timezone.now().minute
+    game_time_hour = timezone.now().hour
+    game_details_time = timezone.now()
     game_details = (
-        GameDetail.objects.filter(game_name="3MIN").order_by("-created_at").first()
+        GameDetail.objects.filter(game_name="3MIN").order_by("-id").first()
     )
     if game_details:
         dt_object = datetime.strptime(
             str(game_details.created_at), "%Y-%m-%d %H:%M:%S.%f%z"
         )
-        timestamp = datetime.strptime(str(game_details_time), "%Y-%m-%d %H:%M:%S.%f")
+        timestamp = datetime.strptime(str(game_details_time).split('+')[0], "%Y-%m-%d %H:%M:%S.%f")
         formatted_time = timestamp.strftime("%Y-%m-%d %H:%M:%S")
         formated_times = dt_object.strftime("%Y-%m-%d %H:%M:%S")
         x = datetime.strptime(formatted_time, "%Y-%m-%d %H:%M:%S")
@@ -120,7 +120,7 @@ def game_id_3min():
                 + str(game_time_second)
             )
             game_details = GameDetail.objects.create(
-                game_type=game_id, game_name="3MIN", created_at=game_details_time
+                game_type=game_id, game_name="3MIN", created_at=timezone.now()
             )
             return game_details.game_type, 180
         else:
@@ -135,7 +135,7 @@ def game_id_3min():
             + str(game_time_second)
         )
         game_details = GameDetail.objects.create(
-            game_type=game_id, game_name="3MIN", created_at=game_details_time
+            game_type=game_id, game_name="3MIN", created_at=timezone.now()
         )
         return game_details.game_type, 180
     if times==5:
@@ -147,18 +147,18 @@ def game_id_3min():
 
 def game_id_5min():
     times = 300
-    game_time_second = datetime.now().second
-    game_time_min = datetime.now().minute
-    game_time_hour = datetime.now().hour
-    game_details_time = datetime.now()
+    game_time_second = timezone.now().second
+    game_time_min = timezone.now().minute
+    game_time_hour = timezone.now().hour
+    game_details_time = timezone.now()
     game_details = (
-        GameDetail.objects.filter(game_name="5MIN").order_by("-created_at").first()
+        GameDetail.objects.filter(game_name="5MIN").order_by("-id").first()
     )
     if game_details:
         dt_object = datetime.strptime(
             str(game_details.created_at), "%Y-%m-%d %H:%M:%S.%f%z"
         )
-        timestamp = datetime.strptime(str(game_details_time), "%Y-%m-%d %H:%M:%S.%f")
+        timestamp = datetime.strptime(str(game_details_time).split('+')[0], "%Y-%m-%d %H:%M:%S.%f")
         formatted_time = timestamp.strftime("%Y-%m-%d %H:%M:%S")
         formated_times = dt_object.strftime("%Y-%m-%d %H:%M:%S")
         x = datetime.strptime(formatted_time, "%Y-%m-%d %H:%M:%S")
@@ -173,7 +173,7 @@ def game_id_5min():
                 + str(game_time_second)
             )
             game_details = GameDetail.objects.create(
-                game_type=game_id, game_name="5MIN", created_at=game_details_time
+                game_type=game_id, game_name="5MIN", created_at=timezone.now()
             )
             return game_details.game_type, 300
         else:
@@ -187,7 +187,7 @@ def game_id_5min():
             + str(game_time_second)
         )
         game_details = GameDetail.objects.create(
-            game_type=game_id, game_name="5MIN", created_at=game_details_time
+            game_type=game_id, game_name="5MIN", created_at=timezone.now()
         )
         return game_details.game_type, 300
     if times==5:
@@ -199,18 +199,18 @@ def game_id_5min():
 
 def game_id_10min():
     times = 600
-    game_time_second = datetime.now().second
-    game_time_min = datetime.now().minute
-    game_time_hour = datetime.now().hour
-    game_details_time = datetime.now()
+    game_time_second = timezone.now().second
+    game_time_min = timezone.now().minute
+    game_time_hour = timezone.now().hour
+    game_details_time = timezone.now()
     game_details = (
-        GameDetail.objects.filter(game_name="10MIN").order_by("-created_at").first()
+        GameDetail.objects.filter(game_name="10MIN").order_by("-id").first()
     )
     if game_details:
         dt_object = datetime.strptime(
             str(game_details.created_at), "%Y-%m-%d %H:%M:%S.%f%z"
         )
-        timestamp = datetime.strptime(str(game_details_time), "%Y-%m-%d %H:%M:%S.%f")
+        timestamp = datetime.strptime(str(game_details_time).split('+')[0], "%Y-%m-%d %H:%M:%S.%f")
         formatted_time = timestamp.strftime("%Y-%m-%d %H:%M:%S")
         formated_times = dt_object.strftime("%Y-%m-%d %H:%M:%S")
         x = datetime.strptime(formatted_time, "%Y-%m-%d %H:%M:%S")
@@ -225,7 +225,7 @@ def game_id_10min():
                 + str(game_time_second)
             )
             game_details = GameDetail.objects.create(
-                game_type=game_id, game_name="10MIN", created_at=game_details_time
+                game_type=game_id, game_name="10MIN", created_at=timezone.now()
             )
             return game_details.game_type, 60
         else:
@@ -239,7 +239,7 @@ def game_id_10min():
             + str(game_time_second)
         )
         game_details = GameDetail.objects.create(
-            game_type=game_id, game_name="10MIN", created_at=game_details_time
+            game_type=game_id, game_name="10MIN", created_at=timezone.now()
         )
         return game_details.game_type, 60
     if times==5:
@@ -273,5 +273,5 @@ def check_game_times():
 
 def start():
     scheduler = BackgroundScheduler()
-    # scheduler.add_job(check_game_times, "interval", seconds=1)
+    scheduler.add_job(check_game_times, "interval", seconds=1)
     scheduler.start()
