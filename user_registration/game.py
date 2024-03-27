@@ -23,21 +23,25 @@ def calculate_winning_number(bet):
     amount = sum([b['total_amount'] for b in bet])
     winning_amount = amount 
     lowest_bet_dict  = {}
-    for i in range(0,10):
-        winning_number = str(i)
-        ball = color_and_number_of_balls[winning_number]
-        amount = 0
-        for b in bet:
-            if b['type_of_bet'] == 'big/small' and b['bet'] == ball[-1]:
-                amount += b['total_amount'] * 2
-            elif b['type_of_bet'] == 'color' and b['bet'] in ball[0:-1]:
-                amount += b['total_amount'] * 2 if b['bet'] != 'violet' else b['total_amount'] * 4.5
-            elif b['type_of_bet'] == 'number' and str(b['bet']) == str(winning_number):
-                amount += b['total_amount'] * 9        
-        if amount <= winning_amount:
-            lowest_bet_dict[winning_number] = amount
-    winning_number = min(lowest_bet_dict, key=lowest_bet_dict.get)
-    return winning_number, lowest_bet_dict[winning_number] , winning_amount , color_and_number_of_balls[winning_number][0:-1] , color_and_number_of_balls[winning_number][-1]
+    if winning_amount == 0:
+        winning_number = random.randrange(9)
+    else:
+        for i in range(0,10):
+            winning_number = str(i)
+            ball = color_and_number_of_balls[winning_number]
+            amount = 0
+            for b in bet:
+                if b['type_of_bet'] == 'big/small' and b['bet'] == ball[-1]:
+                    amount += b['total_amount'] * 2
+                elif b['type_of_bet'] == 'color' and b['bet'] in ball[0:-1]:
+                    amount += b['total_amount'] * 2 if b['bet'] != 'violet' else b['total_amount'] * 4.5
+                elif b['type_of_bet'] == 'number' and str(b['bet']) == str(winning_number):
+                    amount += b['total_amount'] * 9        
+            if amount <= winning_amount:
+                lowest_bet_dict[winning_number] = amount
+        winning_number = min(lowest_bet_dict, key=lowest_bet_dict.get)
+
+    return winning_number, lowest_bet_dict.get(winning_number,0) , winning_amount , color_and_number_of_balls[winning_number][0:-1] , color_and_number_of_balls[winning_number][-1]
 
 
 def play_1min_game(game_id , game__type):
