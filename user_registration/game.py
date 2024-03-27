@@ -24,7 +24,7 @@ def calculate_winning_number(bet):
     winning_amount = amount 
     lowest_bet_dict  = {}
     if winning_amount == 0:
-        winning_number = random.randrange(9)
+        winning_number = str(random.randrange(9))
     else:
         for i in range(0,10):
             winning_number = str(i)
