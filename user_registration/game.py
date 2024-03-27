@@ -34,13 +34,21 @@ def calculate_winning_number(bet):
                 if b['type_of_bet'] == 'big/small' and b['bet'] == ball[-1]:
                     amount += b['total_amount'] * 2
                 elif b['type_of_bet'] == 'color' and b['bet'] in ball[0:-1]:
-                    amount += b['total_amount'] * 2 if b['bet'] != 'violet' else b['total_amount'] * 4.5
+                    if i == 0 or i ==  5 and b['bet'] in ['red','green']:
+                        amount +=  b['total_amount'] * 1.5
+                    else:
+                        amount += b['total_amount'] * 2 if b['bet'] != 'violet' else b['total_amount'] * 4.5
                 elif b['type_of_bet'] == 'number' and str(b['bet']) == str(winning_number):
                     amount += b['total_amount'] * 9        
             if amount <= winning_amount:
                 lowest_bet_dict[winning_number] = amount
-        winning_number = min(lowest_bet_dict, key=lowest_bet_dict.get)
-
+        # winning_number = min(lowest_bet_dict, key=lowest_bet_dict.get)
+        new_win_number = []
+        min_bet_amounts = min(list(lowest_bet_dict.values()))
+        for k in lowest_bet_dict:
+            if lowest_bet_dict[k] ==  min_bet_amounts:
+                new_win_number.append(int(k))
+        winning_number = str(random.choice(new_win_number))
     return winning_number, lowest_bet_dict.get(winning_number,0) , winning_amount , color_and_number_of_balls[winning_number][0:-1] , color_and_number_of_balls[winning_number][-1]
 
 
