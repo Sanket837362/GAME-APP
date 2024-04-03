@@ -108,3 +108,59 @@ class UserGameDataAdmin(admin.ModelAdmin):
     search_fields = ('game_type', 'type_of_bet', 'bet', 'user_id__username')
 
 admin.site.register(UserGameData, UserGameDataAdmin)
+
+
+class UserDepositwHistoryAdmin(admin.ModelAdmin):
+    list_display = ('id', 'upi_id', 'utr_number', 'amount', 'status_colored', 'created_at', 'updated_at', 'is_active')
+    search_fields = ('id','status')  # Assuming 'username' is a field in UserDetail model
+    list_filter = ('status', 'created_at', 'updated_at', 'is_active')
+    actions = ['mark_as_done', 'mark_as_reject' ]
+
+    # def bank_info(self, obj):
+    #     return f"{obj.bank_id.bank_name},AC No: {obj.bank_id.account_number}, IFSC: {obj.bank_id.ifsc_code}"
+
+    # bank_info.short_description = 'Bank Details'
+
+    
+    def status_colored(self, obj):
+        if obj.status == 'In Process':
+            return format_html('<span style="color: orange;">{}</span>', obj.status)
+        elif obj.status == 'done':
+            return format_html('<span style="color: green;">{}</span>', obj.status)
+        elif obj.status == 'reject':
+            return format_html('<span style="color: red;">{}</span>', obj.status)
+        else:
+            return format_html('<span style="color: orange;">{}</span>', obj.status)
+
+    status_colored.short_description = 'Status'
+
+    def mark_as_done(self, request, queryset):
+        rows_updated = 0
+        for obj in queryset:
+            if obj.status != 'reject':
+                obj.status = 'done'
+                obj.save()
+                rows_updated += 1
+                user = obj.user_id
+                user.wallet += obj.amount
+                user.save()
+        self.message_user(request, f'{rows_updated} record(s) marked as Done.')
+
+    mark_as_done.short_description = 'Mark selected as Done'
+
+    def mark_as_reject(self, request, queryset):
+        rows_updated = 0
+        for obj in queryset:
+            if obj.status != 'done':
+                obj.status = 'reject'
+                obj.is_active = False
+                obj.save()
+                rows_updated += 1
+                # Update user's wallet balance if status is rejected
+                # if obj.status == 'reject':
+                #     user = obj.user_id
+                #     user.wallet += obj.amount
+                #     user.save()
+        self.message_user(request, f'{rows_updated} record(s) marked as Reject.')
+    mark_as_reject.short_description = 'Mark selected as Reject'
+admin.site.register(Userdeposithistory, UserDepositwHistoryAdmin)

@@ -99,3 +99,14 @@ class UserwithdrawHistory(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=True) 
+
+class Userdeposithistory(models.Model):
+    id = models.AutoField(primary_key=True)
+    user_id = models.ForeignKey(UserDetail,on_delete=models.CASCADE)
+    upi_id = models.CharField(max_length=50)
+    utr_number = models.CharField(max_length=100)
+    status = models.CharField(max_length=50)
+    amount = models.FloatField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    is_active = models.BooleanField(default=True) 

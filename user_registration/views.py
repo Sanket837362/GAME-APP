@@ -414,5 +414,37 @@ class UserwithdrawHistoryAPi(ListAPIView):
             return Response(user_history)
         return Response({"message": "User does not exisits."}  )
 
-    
+class UserDepositHistoryAPi(ListAPIView):
+    def post(self,request):
+        try:
+            user_id = request.data.get('user_id')
+            amount = request.data.get('amount')
+            upi_id  = request.data.get("upi_id")
+            utr_number =  request.data.get("utr_number")
+            user_details = UserDetail.objects.filter(id= user_id).first()
+            if user_details:
+                if  not Userdeposithistory.objects.filter(utr_number = utr_number).exists():
+                    deposit_history = Userdeposithistory.objects.create(
+                        user_id_id = user_details.id,
+                        amount = amount,
+                        upi_id = upi_id,
+                        utr_number = utr_number,
+                        status = "In Process"
+                    )
+                    return Response({"message": "Your Deposit Request Is In Process.","transactionId":deposit_history.id} )
+                return Response({"message": "utr Number is alredy present try again. "})
+            return ({"message": "User details not fond."})
+        except Exception as e:
+            return Response({"message":str(e)})
+        
+    def get(self,request):
+        id = request.GET.get('user_id')
+        if id:
+            user_history = Userdeposithistory.objects.filter(user_id_id = id).values('id', 'upi_id' , 'status' , 'amount' , 'created_at', 'utr_number')
+            return Response(user_history)
+        return Response({"message": "User does not exisits."}  )
+
+
+
+
                              

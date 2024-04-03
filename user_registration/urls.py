@@ -29,4 +29,7 @@ urlpatterns = [
     path('withdraw-money/',  UserwithdrawHistoryAPi.as_view(), name='withdraw_money'),
     path('withdraw-money-history/',  UserwithdrawHistoryAPi.as_view(), name='withdraw_money_history'),
 
+    path('deposit-money/',  UserDepositHistoryAPi.as_view(), name='Depositmoney'),
+    path('deposit-money-history/',  UserDepositHistoryAPi.as_view(), name='Deposit_money_history'),
+
 ]
